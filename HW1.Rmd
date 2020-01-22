@@ -1,0 +1,36 @@
+---
+title: "HW1"
+author: "Corinna Hong"
+date: "January 13, 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, load packages, echo = FALSE, message = FALSE}
+
+library(tidyverse)
+library(janitor)
+
+```
+
+
+```{r, read in data, echo = FALSE, message = FALSE}
+
+adult_organisms <- read_csv("mean_density_adult_organisms.csv")
+
+```
+
+```{r, wrangle data}
+
+adult_organisms_tidy <- adult_organisms %>% 
+  gather(`2009`,`2018`, key = "year", value = "mean_density_per_100m2") %>% 
+  spread(country, mean_density_per_100m2) %>% 
+  clean_names()
+  
+  
+
+```
+
