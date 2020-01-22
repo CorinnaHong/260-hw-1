@@ -26,11 +26,20 @@ adult_organisms <- read_csv("mean_density_adult_organisms.csv")
 ```{r, wrangle data}
 
 adult_organisms_tidy <- adult_organisms %>% 
-  gather(`2009`,`2018`, key = "year", value = "mean_density_per_100m2") %>% 
-  spread(country, mean_density_per_100m2) %>% 
-  clean_names()
-  
-  
+  gather(`2009`,`2018`, key = "year", value = "mean_density_per_100m2")
+
+```
+
+1. Mean Density of Adults
+```{r, histogram}
+
+organism_hist <- ggplot(adult_organisms_tidy, aes(x = mean_density_per_100m2)) +
+  geom_histogram(bins = 6, aes(fill = island)) +
+  facet_wrap(~ organism, scale = "free") + # Create a 6 bin histogram, color code it by island, split graphic visualization by island. Give each histogram its own y-axis scale
+  theme_classic() +
+  scale_y_continuous(expand = c(0,0)) # Remove space between x-axis and graph 
+
+organism_hist
 
 ```
 
