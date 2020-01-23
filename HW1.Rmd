@@ -16,27 +16,27 @@ library(janitor)
 
 ```
 
-
-```{r, read in data, echo = FALSE, message = FALSE}
+```{r, read in adult data, echo = FALSE, message = FALSE}
 
 adult_organisms <- read_csv("mean_density_adult_organisms.csv")
 
 ```
 
-```{r, wrangle data, echo = FALSE}
+```{r, wrangle adult data, echo = FALSE}
 
 adult_organisms_tidy <- adult_organisms %>% 
-  gather(`2009`,`2018`, key = "year", value = "mean_density_per_100m2") %>% 
-  arrange(organism, lagoon, year)
+  gather(`2009`, `2018`, key = "year", value = "mean_density_per_100m2") %>% 
+  arrange(organism, year) %>% 
+  select(organism, lagoon, year, mean_density_per_100m2, ci95) # rearranges columns
 
 ```
 
 # 1. Mean Density of Adults
 </br>
-```{r, fish graphs, echo = FALSE}
+```{r, adult fish graphs, echo = FALSE}
 
 adult_fish <- adult_organisms_tidy %>% 
-  filter(grepl('fish', organism))
+  filter(grepl('fish', organism)) # find anything with "fish" in organism column and keep it
 
 labels <- c('Coral Trout (fish, predators of adult fishes)' = "Coral Trout", 
             'Spotted Damselfish (fish, eats zooplankton)' = "Spotted Damselfish",
@@ -58,7 +58,7 @@ adult_fish_bar # FINALIZE (fix the 100 m^2 problem)
 ```{r, other organisms graph, echo = FALSE}
 
 adult_other <- adult_organisms_tidy %>% 
-  filter(!(grepl('fish', organism)))
+  filter(!(grepl('fish', organism))) # remonve anything with "fish" from organism column
 
 
 adult_other_bar <- ggplot(adult_other, aes(fill = year, x = lagoon, y = mean_density_per_100m2)) +
@@ -72,3 +72,21 @@ adult_other_bar <- ggplot(adult_other, aes(fill = year, x = lagoon, y = mean_den
 adult_other_bar # FINALIZE (fix the 100m^2 problem)
 
 ```
+
+```{r, read in recruit data, echo = FALSE, message = FALSE}
+
+recruit_organisms <- read_csv("mean_number_new_recruits.csv")
+
+```
+
+```{r, wrangle recruit data, echo = FALSE}
+
+recruit_organisms_tidy <- recruit_organisms %>%
+  clean_names() %>% 
+  gather(`rarotonga_2009`, `aitutaki_2009`, `rarotonga_2018`, `aitutaki_2018`, key = "lagoon", value = "density") %>% 
+  separate(lagoon, into = c ("lagoon","year"), sep = "_") %>% 
+  arrange(fish) %>% 
+  select (fish, microhabitat, lagoon, year, density, ci)
+  
+```
+
