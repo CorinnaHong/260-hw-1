@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r, load packages, echo = FALSE, message = FALSE}
+```{r, load packages, echo = FALSE, message = FALSE, warning = FALSE}
 
 library(tidyverse)
 library(janitor)
@@ -23,23 +23,52 @@ adult_organisms <- read_csv("mean_density_adult_organisms.csv")
 
 ```
 
-```{r, wrangle data}
+```{r, wrangle data, echo = FALSE}
 
 adult_organisms_tidy <- adult_organisms %>% 
-  gather(`2009`,`2018`, key = "year", value = "mean_density_per_100m2")
+  gather(`2009`,`2018`, key = "year", value = "mean_density_per_100m2") %>% 
+  arrange(organism, lagoon, year)
 
 ```
 
-1. Mean Density of Adults
-```{r, histogram}
+# 1. Mean Density of Adults
+</br>
+```{r, fish graphs, echo = FALSE}
 
-organism_hist <- ggplot(adult_organisms_tidy, aes(x = mean_density_per_100m2)) +
-  geom_histogram(bins = 6, aes(fill = island)) +
-  facet_wrap(~ organism, scale = "free") + # Create a 6 bin histogram, color code it by island, split graphic visualization by island. Give each histogram its own y-axis scale
-  theme_classic() +
-  scale_y_continuous(expand = c(0,0)) # Remove space between x-axis and graph 
+adult_fish <- adult_organisms_tidy %>% 
+  filter(grepl('fish', organism))
 
-organism_hist
+labels <- c('Coral Trout (fish, predators of adult fishes)' = "Coral Trout", 
+            'Spotted Damselfish (fish, eats zooplankton)' = "Spotted Damselfish",
+            'Surgeonfish (fish, herbivores)' = "Surgeonfish",
+            'Yellow Damselfish (fish, eats zooplankton)' = "Yellow Damselfish") # Rename organisms for facet labels
+
+adult_fish_bar <- ggplot(adult_fish, aes(fill = year, x = lagoon, y = mean_density_per_100m2)) +
+  geom_bar(position = "dodge", stat = "identity") + 
+  geom_errorbar(aes(ymin = mean_density_per_100m2 + ci95, ymax = mean_density_per_100m2 - ci95), width = 0.3, position=position_dodge(.9)) +  
+  labs(x = "Lagoon", y = expression(Mean~Density~(number/"100m^2")), title = "Adult Fish Comparisons") +
+  facet_wrap(~ organism, labeller=labeller(organism = labels), scale = "free") + # facet wrap with new labels  scale_y_continuous(expand = c(0,0)) +
+  theme_minimal() # or maybe go with classic?
+
+adult_fish_bar # FINALIZE (fix the 100 m^2 problem)
 
 ```
 
+
+```{r, other organisms graph, echo = FALSE}
+
+adult_other <- adult_organisms_tidy %>% 
+  filter(!(grepl('fish', organism)))
+
+
+adult_other_bar <- ggplot(adult_other, aes(fill = year, x = lagoon, y = mean_density_per_100m2)) +
+  geom_bar(position = "dodge", stat = "identity") + 
+  geom_errorbar(aes(ymin = mean_density_per_100m2 + ci95, ymax = mean_density_per_100m2 - ci95), width = 0.3, position=position_dodge(.9)) +  
+  labs(x = "Lagoon", y = expression(Mean~Density~(m^2/"100m^2")), title = "Adult Organisms Comparisons") +
+  facet_wrap(~ organism, scale = "free") + # facet wrap with new labels  
+  scale_y_continuous(expand = c(0,0)) +
+  theme_minimal() # or maybe go with classic?
+
+adult_other_bar # FINALIZE (fix the 100m^2 problem)
+
+```

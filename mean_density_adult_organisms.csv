@@ -1,12 +1,12 @@
-﻿organism,island,2009,2018,95_ci
-Surgeonfish (herbivores),Rarotonga,250,20,32
-Surgeonfish (herbivores),Aitutaki,360,390,32
-Coral Trout (predators of adult fishes),Rarotonga,120,4,21
-Coral Trout (predators of adult fishes),Aitutaki,170,40,21
-Spotted Damselfish (eats zooplankton),Rarotonga,520,19,47
-Spotted Damselfish (eats zooplankton),Aitutaki,910,257,47
-Yellow Damselfish (eats zooplankton),Rarotonga,32,90,15
-Yellow Damselfish (eats zooplankton),Aitutaki,36,80,15
+﻿organism,lagoon,2009,2018,ci95
+"Surgeonfish (fish, herbivores)",Rarotonga,250,20,32
+"Surgeonfish (fish, herbivores)",Aitutaki,360,390,32
+"Coral Trout (fish, predators of adult fishes)",Rarotonga,120,4,21
+"Coral Trout (fish, predators of adult fishes)",Aitutaki,170,40,21
+"Spotted Damselfish (fish, eats zooplankton)",Rarotonga,520,19,47
+"Spotted Damselfish (fish, eats zooplankton)",Aitutaki,910,257,47
+"Yellow Damselfish (fish, eats zooplankton)",Rarotonga,32,90,15
+"Yellow Damselfish (fish, eats zooplankton)",Aitutaki,36,80,15
 Mounding Corals,Rarotonga,19.5,18,3.5
 Mounding Corals,Aitutaki,14.5,15.9,3.5
 Coarse-branching Corals,Rarotonga,2.8,0.7,0.5
