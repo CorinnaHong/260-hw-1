@@ -31,9 +31,9 @@ adult_organisms_tidy <- adult_organisms %>%
 
 ```
 
-# 1. Mean Density of Adults
+#1. Mean Density of Adults
 </br>
-```{r, adult fish graphs, echo = FALSE}
+```{r, adult fish graph, echo = FALSE}
 
 adult_fish <- adult_organisms_tidy %>% 
   filter(grepl('fish', organism)) # find anything with "fish" in organism column and keep it
@@ -45,9 +45,11 @@ labels <- c('Coral Trout (fish, predators of adult fishes)' = "Coral Trout",
 
 adult_fish_bar <- ggplot(adult_fish, aes(fill = year, x = lagoon, y = mean_density_per_100m2)) +
   geom_bar(position = "dodge", stat = "identity") + 
-  geom_errorbar(aes(ymin = mean_density_per_100m2 + ci95, ymax = mean_density_per_100m2 - ci95), width = 0.3, position=position_dodge(.9)) +  
+  geom_errorbar(aes(ymin = mean_density_per_100m2 + ci95, ymax = mean_density_per_100m2 - ci95), 
+                width = 0.3, position=position_dodge(.9)) +  
   labs(x = "Lagoon", y = expression(Mean~Density~(number/"100m^2")), title = "Adult Fish Comparisons") +
-  facet_wrap(~ organism, labeller=labeller(organism = labels), scale = "free") + # facet wrap with new labels  scale_y_continuous(expand = c(0,0)) +
+  facet_wrap(~ organism, labeller=labeller(organism = labels), scale = "free") + # facet wrap with new labels
+  scale_y_continuous(expand = c(0,0)) +  
   theme_minimal() # or maybe go with classic?
 
 adult_fish_bar # FINALIZE (fix the 100 m^2 problem)
@@ -63,16 +65,19 @@ adult_other <- adult_organisms_tidy %>%
 
 adult_other_bar <- ggplot(adult_other, aes(fill = year, x = lagoon, y = mean_density_per_100m2)) +
   geom_bar(position = "dodge", stat = "identity") + 
-  geom_errorbar(aes(ymin = mean_density_per_100m2 + ci95, ymax = mean_density_per_100m2 - ci95), width = 0.3, position=position_dodge(.9)) +  
+  geom_errorbar(aes(ymin = mean_density_per_100m2 + ci95, ymax = mean_density_per_100m2 - ci95),
+                width = 0.3, position=position_dodge(.9)) +  
   labs(x = "Lagoon", y = expression(Mean~Density~(m^2/"100m^2")), title = "Adult Organisms Comparisons") +
   facet_wrap(~ organism, scale = "free") + # facet wrap with new labels  
   scale_y_continuous(expand = c(0,0)) +
   theme_minimal() # or maybe go with classic?
 
-adult_other_bar # FINALIZE (fix the 100m^2 problem)
+adult_other_bar # FINALIZE (fix the 100m^2 problem, resize/rearragne facet graphs)
 
 ```
 
+#2. Mean Density of Recruit Organisms
+</br>
 ```{r, read in recruit data, echo = FALSE, message = FALSE}
 
 recruit_organisms <- read_csv("mean_number_new_recruits.csv")
@@ -82,11 +87,26 @@ recruit_organisms <- read_csv("mean_number_new_recruits.csv")
 ```{r, wrangle recruit data, echo = FALSE}
 
 recruit_organisms_tidy <- recruit_organisms %>%
+  gather(`Rarotonga_2009`, `Aitutaki_2009`, `Rarotonga_2018`, `Aitutaki_2018`, key = "lagoon", value = "density") %>%
   clean_names() %>% 
-  gather(`rarotonga_2009`, `aitutaki_2009`, `rarotonga_2018`, `aitutaki_2018`, key = "lagoon", value = "density") %>% 
   separate(lagoon, into = c ("lagoon","year"), sep = "_") %>% 
   arrange(fish) %>% 
   select (fish, microhabitat, lagoon, year, density, ci)
   
+```
+
+```{r, recruit graph, echo = FALSE}
+
+recruit_organisms_bar <- ggplot(recruit_organisms_tidy, aes(fill = year, x = lagoon, y = density)) +
+  geom_bar(position = "dodge", stat = "identity") +
+  geom_errorbar(aes(ymin = density + ci, ymax = density - ci),
+                width = 0.3, position=position_dodge(.9)) +  
+  labs(x = "Lagoon", y = expression(Mean~Density~(number/m^2)), title = "Fish Recruits Comparisons") +
+  facet_wrap(~ fish, scale = "free") +  
+  scale_y_continuous(expand = c(0,0)) +
+  theme_minimal() # or maybe go with classic?
+
+recruit_organisms_bar # FINALIZE, remove black line at the bottom.
+
 ```
 
