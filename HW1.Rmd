@@ -101,7 +101,7 @@ recruit_organisms_bar <- ggplot(recruit_organisms_tidy, aes(fill = year, x = lag
   geom_bar(position = "dodge", stat = "identity") +
   geom_errorbar(aes(ymin = density + ci, ymax = density - ci),
                 width = 0.3, position=position_dodge(.9)) +  
-  labs(x = "Lagoon", y = expression(Mean~Density~(number/m^2)), title = "Fish Recruits Comparisons") +
+  labs(x = "Lagoon", y = expression(Mean~Density~(number/m^2)), title = "Fish Recruit Comparisons") +
   facet_wrap(~ fish, scale = "free") +  
   scale_y_continuous(expand = c(0,0)) +
   theme_minimal() # or maybe go with classic?
