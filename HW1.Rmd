@@ -6,23 +6,21 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE,
+                      message = FALSE,
+                      warning = FALSE)
 ```
 
-```{r, load packages, echo = FALSE, message = FALSE, warning = FALSE}
+```{r, load packages}
 
 library(tidyverse)
 library(janitor)
 
 ```
 
-```{r, read in adult data, echo = FALSE, message = FALSE}
+```{r, read in and wrangle adult data}
 
 adult_organisms <- read_csv("mean_density_adult_organisms.csv")
-
-```
-
-```{r, wrangle adult data, echo = FALSE}
 
 adult_organisms_tidy <- adult_organisms %>% 
   gather(`2009`, `2018`, key = "year", value = "mean_density_per_100m2") %>% 
@@ -33,7 +31,7 @@ adult_organisms_tidy <- adult_organisms %>%
 
 #1. Mean Density of Adults
 </br>
-```{r, adult fish graph, echo = FALSE}
+```{r, adult fish graph}
 
 adult_fish <- adult_organisms_tidy %>% 
   filter(grepl('fish', organism)) # find anything with "fish" in organism column and keep it
@@ -57,7 +55,7 @@ adult_fish_bar # FINALIZE (fix the 100 m^2 problem)
 ```
 
 
-```{r, other organisms graph, echo = FALSE}
+```{r, other organisms graph}
 
 adult_other <- adult_organisms_tidy %>% 
   filter(!(grepl('fish', organism))) # remonve anything with "fish" from organism column
@@ -78,13 +76,9 @@ adult_other_bar # FINALIZE (fix the 100m^2 problem, resize/rearragne facet graph
 
 #2. Mean Density of Recruit Organisms
 </br>
-```{r, read in recruit data, echo = FALSE, message = FALSE}
+```{r, read in and wrangle recruit data}
 
 recruit_organisms <- read_csv("mean_number_new_recruits.csv")
-
-```
-
-```{r, wrangle recruit data, echo = FALSE}
 
 recruit_organisms_tidy <- recruit_organisms %>%
   gather(`Rarotonga_2009`, `Aitutaki_2009`, `Rarotonga_2018`, `Aitutaki_2018`, key = "lagoon", value = "density") %>%
@@ -92,10 +86,10 @@ recruit_organisms_tidy <- recruit_organisms %>%
   separate(lagoon, into = c ("lagoon","year"), sep = "_") %>% 
   arrange(fish) %>% 
   select (fish, microhabitat, lagoon, year, density, ci)
-  
+
 ```
 
-```{r, recruit graph, echo = FALSE}
+```{r, recruit graph}
 
 recruit_organisms_bar <- ggplot(recruit_organisms_tidy, aes(fill = year, x = lagoon, y = density)) +
   geom_bar(position = "dodge", stat = "identity") +
@@ -107,6 +101,24 @@ recruit_organisms_bar <- ggplot(recruit_organisms_tidy, aes(fill = year, x = lag
   theme_minimal() # or maybe go with classic?
 
 recruit_organisms_bar # FINALIZE, remove black line at the bottom.
+
+```
+
+```{r, read in and wrangle adult and recruit data}
+
+adult_recruit <- read_csv("adult_recruit_density.csv")
+
+adult_recruit_tidy <- adult_recruit %>%
+  gather(`Rarotonga_2009`, `Aitutaki_2009`, `Rarotonga_2018`, `Aitutaki_2018`, key = "lagoon", value = "density") %>% 
+  clean_names() %>% 
+  separate(lagoon, into = c ("lagoon","year"), sep = "_") %>% 
+  arrange(fish)
+
+```
+
+```{r}
+
+
 
 ```
 
