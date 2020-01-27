@@ -43,10 +43,11 @@ labels <- c('Coral Trout (fish, predators of adult fishes)' = "Coral Trout",
 
 adult_fish_bar <- ggplot(adult_fish, aes(fill = year, x = lagoon, y = mean_density_per_100m2)) +
   geom_bar(position = "dodge", stat = "identity") + 
-  geom_errorbar(aes(ymin = mean_density_per_100m2 + ci95, ymax = mean_density_per_100m2 - ci95), 
-                width = 0.3, position=position_dodge(.9)) +  
+  geom_errorbar(aes(ymin = mean_density_per_100m2 + ci95, 
+                    ymax = mean_density_per_100m2 - ci95), 
+                width = 0.3, position =  position_dodge(.9)) +  
   labs(x = "Lagoon", y = expression(Mean~Density~(number/"100m^2")), title = "Adult Fish Comparisons") +
-  facet_wrap(~ organism, labeller=labeller(organism = labels), scale = "free") + # facet wrap with new labels
+  facet_wrap(~ organism, labeller = labeller(organism = labels), scale = "free") + # facet wrap with new labels
   scale_y_continuous(expand = c(0,0)) +  
   theme_minimal() # or maybe go with classic?
 
@@ -63,7 +64,8 @@ adult_other <- adult_organisms_tidy %>%
 
 adult_other_bar <- ggplot(adult_other, aes(fill = year, x = lagoon, y = mean_density_per_100m2)) +
   geom_bar(position = "dodge", stat = "identity") + 
-  geom_errorbar(aes(ymin = mean_density_per_100m2 + ci95, ymax = mean_density_per_100m2 - ci95),
+  geom_errorbar(aes(ymin = mean_density_per_100m2 + ci95, 
+                    ymax = mean_density_per_100m2 - ci95),
                 width = 0.3, position=position_dodge(.9)) +  
   labs(x = "Lagoon", y = expression(Mean~Density~(m^2/"100m^2")), title = "Adult Organisms Comparisons") +
   facet_wrap(~ organism, scale = "free") + # facet wrap with new labels  
@@ -93,7 +95,8 @@ recruit_organisms_tidy <- recruit_organisms %>%
 
 recruit_organisms_bar <- ggplot(recruit_organisms_tidy, aes(fill = year, x = lagoon, y = density)) +
   geom_bar(position = "dodge", stat = "identity") +
-  geom_errorbar(aes(ymin = density + ci, ymax = density - ci),
+  geom_errorbar(aes(ymin = density + ci, 
+                    ymax = density - ci),
                 width = 0.3, position=position_dodge(.9)) +  
   labs(x = "Lagoon", y = expression(Mean~Density~(number/m^2)), title = "Fish Recruit Comparisons") +
   facet_wrap(~ fish, scale = "free") +  
@@ -109,16 +112,32 @@ recruit_organisms_bar # FINALIZE, remove black line at the bottom.
 adult_recruit <- read_csv("adult_recruit_density.csv")
 
 adult_recruit_tidy <- adult_recruit %>%
-  gather(`Rarotonga_2009`, `Aitutaki_2009`, `Rarotonga_2018`, `Aitutaki_2018`, key = "lagoon", value = "density") %>% 
-  clean_names() %>% 
-  separate(lagoon, into = c ("lagoon","year"), sep = "_") %>% 
+  gather(`Rarotonga_2009`, `Aitutaki_2009`, `Rarotonga_2018`, `Aitutaki_2018`, key = "lagoon", value = "density") %>%
+  separate(lagoon, into = c ("lagoon","year"), sep = "_") %>%
+  spread(Type, density) %>%
+  clean_names() %>%
   arrange(fish)
 
 ```
 
-```{r}
+```{r, calculate r-squared values}
 
 
+
+```
+
+
+```{r, adults and recruits graphs}
+
+adult_recruit_scatter <- ggplot(adult_recruit_tidy, aes(x = recruit, y = adult)) +
+  geom_point(aes(color = lagoon,
+                 shape = year)) +
+  geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
+  facet_wrap( ~ fish, scale = "free") +
+  labs(x = "Recruit Density (number/100m^2)", y = "Adult Density (number/100m^2)", title = "Recruit and Adult Density") +
+  theme_minimal()
+
+adult_recruit_scatter #FINALIZE, add R2 values
 
 ```
 
