@@ -2,7 +2,9 @@
 title: "HW1"
 author: "Corinna Hong"
 date: "January 13, 2020"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
