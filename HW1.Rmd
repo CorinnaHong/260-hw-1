@@ -48,14 +48,18 @@ adult_fish_bar <- ggplot(adult_fish, aes(fill = year, x = lagoon, y = mean_densi
   geom_errorbar(aes(ymin = mean_density_per_100m2 + ci95, 
                     ymax = mean_density_per_100m2 - ci95), 
                 width = 0.3, position =  position_dodge(.9)) +  
-  labs(x = "Lagoon", y = expression(Mean~Density~(number/"100m^2")), title = "Adult Fish Comparisons") +
+  labs(x = "Lagoon", y = expression(Mean~Density~("#"/100~m^2~ of~reef)), title = "Adult Fish Comparisons") +
   facet_wrap(~ organism, labeller = labeller(organism = labels), scale = "free") + # facet wrap with new labels
   scale_y_continuous(expand = c(0,0)) +  
   theme_minimal()
 
-adult_fish_bar # FINALIZE (fix the 100 m^2 problem)
+adult_fish_bar
 
 ```
+
+Coral trout, spotted damselfish, and surgeonfish all showed statistically significant differences in density between Rarotonga and Aitutaki both in 2009 and 2018. Coral trout, spotted damselfish, and surgeonfish had higher densities on Aitutaki than Rarotonga in both years. 
+
+Coral trout, spotted damselfish, and yellow damselfish showed a statistically significant difference in density between 2009 and 2018 for both Rarotonga and Aitutaki. Surgeonfish only showed a statistically significant difference in density between 2009 and 2018 at Rarotonga. Coral trout and spotted damselfish had higher densities in 2009 than in 2018 at both lagoons. Yellow damselfish had higher densities in 2018 than 2009 at both lagoons.
 
 
 ```{r, other organisms graph}
@@ -70,14 +74,19 @@ adult_other_bar <- ggplot(adult_other, aes(fill = year, x = lagoon, y = mean_den
   geom_errorbar(aes(ymin = mean_density_per_100m2 + ci95, 
                     ymax = mean_density_per_100m2 - ci95),
                 width = 0.3, position=position_dodge(.9)) +  
-  labs(x = "Lagoon", y = expression(Mean~Density~(m^2/"100m^2")), title = "Adult Organisms Comparisons") +
-  facet_wrap(~ organism, scale = "free") + 
+  labs(x = "Lagoon", y = expression(Mean~Density~(m^2/100~m^2~of~reef)), title = "Adult Organisms Comparisons") +
+  facet_wrap(~ organism, ncol = 2, scale = "free") + 
   scale_y_continuous(expand = c(0,0)) +
   theme_minimal()
 
-adult_other_bar # FINALIZE (fix the 100m^2 problem, resize/rearragne facet graphs)
+adult_other_bar
 
 ```
+
+Sea anemones showed a significant difference in density between Rarotonga and Aitutaki in 2009 and 2018. Algae, coarse-branching corals, and fine-braching corals only showed a significant difference in density between Rarotonga and Aitutaki in 2018. Average sea anemone density was higher in Aitutaki than Rarotonga for both years. Average algae density was higher in Rarotonga than Aitutaki in 2018. Average coarse-branching coral and fine-branching coral density was higher in Aitutaki than Rarotonga in 2018.
+
+Coarse-branching corals and sea anemones showed significant differences in density between 2009 and 2018 at both Rarotonga and Aitutaki. Algae showed a significant difference in density between 2009 and 2018 only at Rarotonga. Coarse-branching coral density was higher in 2009 than 2018. Sea anemones decreased in density between 2009 and 2018 at both Aitutaki and Rarotonga. Average algae density increased at Rarotonga from 2009 to 2018. 
+
 
 #2. Mean Density of Recruit Organisms
 </br>
@@ -102,14 +111,18 @@ recruit_organisms_bar <- ggplot(recruit_organisms_tidy, aes(fill = year, x = lag
   geom_errorbar(aes(ymin = density + ci, 
                     ymax = density - ci),
                 width = 0.3, position=position_dodge(.9)) +  
-  labs(x = "Lagoon", y = expression(Mean~Density~(number/m^2)), title = "Fish Recruit Comparisons") +
+  labs(x = "Lagoon", y = expression(Mean~Density~("#"/m^2~of~microhabitat)), title = "Fish Recruit Comparisons") +
   facet_wrap(~ fish, scale = "free") +  
   scale_y_continuous(expand = c(0,0)) +
   theme_minimal() 
 
-recruit_organisms_bar # FINALIZE, remove black line at the bottom.
+recruit_organisms_bar
 
 ```
+
+Yellow damselfish recruits showed a significant deifference in density between Aitutaki and Rarotonga in 2009 and 2018. Average yellow damselfish density was higher in Rarotonga than Aitutaki for both years. Coral trout showed a significant difference in density betwwen Aitutaki and Rarotonga in 2018. Average coral trout density was higher in Aitutaki than Rarotonga for that year. 
+
+Coral trout and yellow damselfish showed significant differences in density in 2009 and 2018 at both lagoons. Average coral trout density was higher in 2009 than 2018 at both lagoons. Average yellow damselfish density was higher in 2018 than 2009 at both lagoons. Surgeonfish at Rarotonga showed a significant difference in density between 2009 and 2018 where densities were higher in 2018 than 2009.
 
 #3. Density of recruits and adults per area of reef
 </br>
@@ -128,7 +141,14 @@ adult_recruit_tidy <- adult_recruit %>%
 
 ```{r, calculate r-squared values}
 
+adult_recruit_r <- adult_recruit_tidy %>%
+  group_by(fish) %>% 
+  summarize(R2 = summary(lm(adult ~ recruit))$r.squared)
 
+# Coral 0.8957753	
+# Spotted 0.9434432
+# Surgeon 0.9675400	
+# Yellow 0.4017240
 
 ```
 
@@ -141,12 +161,15 @@ adult_recruit_scatter <- ggplot(adult_recruit_tidy, aes(x = recruit, y = adult))
   scale_color_manual(values=c("lightseagreen", "goldenrod2", "lightseagreen", "goldenrod2")) +
   geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
   facet_wrap( ~ fish, scale = "free") +
-  labs(x = "Recruit Density (number/100m^2)", y = "Adult Density (number/100m^2)", title = "Recruit and Adult Density") +
+  labs(x = expression(Mean~Recruit~Density~("#"/100~m^2~of~reef)), y = expression(Mean~Adult~Density~("#"/100~m^2~of~reef)), title = "Relationship Between Density of Adults and Recruits") +
   theme_minimal()
 
-adult_recruit_scatter #FINALIZE, add R2 values, also recuits v. adults or adults v. recruits?
+adult_recruit_scatter
 
 ```
+
+All species of fish show positive correlations between average adult fish density and average fish recruit density. The linear models fits the data for Surgeonfish the most, with R^2^ = 0.97. This means that the positive correlation between adult sugeonfish and surgeonfish recruits is mostly predicted by the value of the recruit density. The linear model for yellow damselfish has the lowest R^2^ value of 0.40. This means that, based on my linear model, the value of recuit density does not predict the value of adult fish density as well as the other models.
+
 
 #4. Adults and microhabitat
 </br>
@@ -165,7 +188,14 @@ adult_micro_tidy <- adult_micro %>%
 
 ```{r, r-squared}
 
+adult_micro_r <- adult_micro_tidy %>%
+  group_by(fish) %>% 
+  summarize(R2 = summary(lm(adult ~ microhabitat))$r.squared)
 
+# Coral 0.7761476411
+# Spotted 0.9482483320
+# Surgeon 0.9646356647	
+# Yellow 0.0001074609	
 
 ```
 
@@ -177,12 +207,14 @@ adult_micro_scatter <- ggplot(adult_micro_tidy, aes(x = microhabitat, y = adult)
   scale_color_manual(values=c("lightseagreen", "goldenrod2", "lightseagreen", "goldenrod2")) +
   geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
   facet_wrap( ~ fish, scale = "free") +
-  labs(x = "Recruit Microhabitat Density (m^2/100m^2)", y = "Adult Density (number/100m^2)", title = "Adult and microhabitat density") +
+  labs(x = expression(Mean~Recruit~Microhabitat~Density~(m^2/100~m^2~of~reef)), y = expression(Mean~Adult~Density~("#"/100~m^2~of~reef)), title = "Relationship Between Density of Adults and Recruit's Microhabitat") +
   theme_minimal()
 
 adult_micro_scatter
 
 ```
+
+Coral trout, spotted damselfish, and surgeonfish all show a positive relationship between microhabitat density of their young and adult density. Yellow Damselfish shows no correlation between the two. Once again, the liner model fits the data for surgeonfish the best with am R^2^ value of 0.96. This means that the density of fish recruit microhabitat predicts the density of adult fish of the same species well. The model for yellow damselfish has an R^2^ value of 0.00, indicating that microhabitat density is not a strong predictor of adult fish density for that species.
 
 #5. Density of Adults per Area of Bottom Cover
 
@@ -197,8 +229,8 @@ adult_habitat_density <- adult_micro_tidy %>%
 
 adult_habitat_bar <- ggplot(adult_habitat_density, aes(fill = year, x = lagoon, y = density)) +
   geom_bar(position = "dodge", stat = "identity") + 
-  scale_fill_manual(values=c("lightseagreen", "goldenrod2", "lightseagreen", "goldenrod2")) +
-  labs(x = "Lagoon", y = expression(Mean~Density~of~Adults~ \n (number/m^2~of~microhabitat)), title = "Density of Adult Organisms in Microhabitat") +
+  scale_fill_manual(values = c("lightseagreen", "goldenrod2", "lightseagreen", "goldenrod2")) +
+  labs(x = "Lagoon", y = expression(Mean~Density~of~Adults~("#"/m^2~of~microhabitat)), title = "Adult Densities in Microhabitats") +
   facet_wrap(~ fish, scale = "free") + 
   scale_y_continuous(expand = c(0,0)) +
   theme_minimal()
@@ -206,6 +238,13 @@ adult_habitat_bar <- ggplot(adult_habitat_density, aes(fill = year, x = lagoon, 
 adult_habitat_bar
 
 ```
+
+Difference bteween laggons
+
+Average density of coral trout and surgeonfish is higher in Aitutaki than Rarotonga in 2009 and 2018. Average density in spotted damselfish in higher in Aitutaki than Rarotonga in 2018. Average yellow damselfish density is higher in Aitutaki than Rarotonga in 2009.
+
+Coral trout and spotted damselfish show large differences in average density in 2009 and 2018 at both lagoons. Average surgeonfish density shows a large decline from 2009 to 2018 at Rarotonga. Average yellow damselfish density increases from 2009 to 2018 at both lagoons.
+
 
 #6. Pair Comparisons
 
@@ -222,9 +261,17 @@ adult_compare_tidy <- adult_compare %>%
 ```
 
 
-```{r, make graphs , fig.width = 5, fig.height = 5}
+```{r, make graphs , fig.width = 5, fig.height = 3}
 
 # Surgeonfish, coral Trout
+
+# Rsquared
+adult_sc_r <- adult_compare_tidy %>%
+  summarize(R2 = summary(lm(coral_trout ~ surgeonfish))$r.squared)
+
+#0.3275856	
+
+# Plot
 adult_pair_scatter <- ggplot(adult_compare_tidy, aes(x = surgeonfish, y = coral_trout)) +
   geom_point(aes(color = lagoon,
                  shape = year)) +
@@ -236,19 +283,39 @@ adult_pair_scatter <- ggplot(adult_compare_tidy, aes(x = surgeonfish, y = coral_
 adult_pair_scatter # Finalize
 
 
+
+
 # Surgeonfish, Spotted Damselfish
+
+# Rsquared
+adult_ss_r <- adult_compare_tidy %>%
+  summarize(R2 = summary(lm(spotted_damselfish ~ surgeonfish))$r.squared)
+
+#0.410623
+
+# Plot
 adult_pair_scatter2 <- ggplot(adult_compare_tidy, aes(x = surgeonfish, y = spotted_damselfish)) +
   geom_point(aes(color = lagoon,
                  shape = year)) +
   scale_color_manual(values=c("lightseagreen", "goldenrod2", "lightseagreen", "goldenrod2")) +
   geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
-  labs(x = "Surgeonfish", y = "Spotted Damselfish", title = "Spotted Damselfish v. Surgeonfish") +
+  labs(x = expression(Surgeonfish~Density~("#"/100~m^2~of~reef)), y = expression(Spotted~Damselfish~Density~("#"/100~m^2~of~reef)), title = "Spotted Damselfish Dne v. Surgeonfish") +
   theme_minimal()
 
 adult_pair_scatter2 # Finalize
 
 
+
+
 # Surgeonfish, Yellow Damselfish
+
+# Rsquared
+adult_sy_r <- adult_compare_tidy %>%
+  summarize(R2 = summary(lm(yellow_damselfish ~ surgeonfish))$r.squared)
+
+#0.2015835
+
+# Plot
 adult_pair_scatter3 <- ggplot(adult_compare_tidy, aes(x = surgeonfish, y = yellow_damselfish)) +
   geom_point(aes(color = lagoon,
                  shape = year)) +
@@ -260,7 +327,16 @@ adult_pair_scatter3 <- ggplot(adult_compare_tidy, aes(x = surgeonfish, y = yello
 adult_pair_scatter3 # Finalize
 
 
+
 # Coral Trout, Spotted Damselfish
+
+# Rsquared
+adult_cs_r <- adult_compare_tidy %>%
+  summarize(R2 = summary(lm(spotted_damselfish ~ coral_trout))$r.squared)
+
+#0.9704437
+
+# Plot
 adult_pair_scatter4 <- ggplot(adult_compare_tidy, aes(x = coral_trout, y = spotted_damselfish)) +
   geom_point(aes(color = lagoon,
                  shape = year)) +
@@ -272,7 +348,16 @@ adult_pair_scatter4 <- ggplot(adult_compare_tidy, aes(x = coral_trout, y = spott
 adult_pair_scatter4 # Finalize
 
 
+
 # Coral Trout, Yellow Damselfish
+
+# Rsquared
+adult_cy_r <- adult_compare_tidy %>%
+  summarize(R2 = summary(lm(yellow_damselfish ~ coral_trout))$r.squared)
+
+#0.8914587
+
+# Plot
 adult_pair_scatter5 <- ggplot(adult_compare_tidy, aes(x = coral_trout, y = yellow_damselfish)) +
   geom_point(aes(color = lagoon,
                  shape = year)) +
@@ -283,7 +368,16 @@ adult_pair_scatter5 <- ggplot(adult_compare_tidy, aes(x = coral_trout, y = yello
 adult_pair_scatter5 # Finalize
 
 
+
 # Spotted Damselfish, Yellow Damselfish
+
+# Rsquared
+adult_spy_r <- adult_compare_tidy %>%
+  summarize(R2 = summary(lm(spotted_damselfish ~ yellow_damselfish))$r.squared)
+
+#0.7656169
+
+# Plot
 adult_pair_scatter6 <- ggplot(adult_compare_tidy, aes(x = yellow_damselfish, y = spotted_damselfish)) +
   geom_point(aes(color = lagoon,
                  shape = year)) +
