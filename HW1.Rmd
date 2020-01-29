@@ -203,15 +203,79 @@ adult_compare_tidy <- adult_compare %>%
 
 ```{r, make graph}
 
-adult_pair_scatter <- ggplot(adult_, aes(x = microhabitat, y = adult)) +
+adult_pair_scatter <- ggplot(adult_compare_tidy, aes(x = surgeonfish, y = coral_trout)) +
   geom_point(aes(color = lagoon,
                  shape = year)) +
   geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
-  facet_wrap( ~ fish, scale = "free") +
-  labs(x = "Recruit Microhabitat Density (m^2/100m^2)", y = "Adult Density (number/100m^2)", title = "Adult and microhabitat density") +
+  labs(x = "Surgeonfish", y = "Coral Trout", title = "Coral Trout v. Surgeonfish") +
   theme_minimal()
 
-adult_micro_scatter
+adult_pair_scatter # Finalize, change size
 
+```
+
+```{r}
+
+adult_pair_scatter2 <- ggplot(adult_compare_tidy, aes(x = surgeonfish, y = spotted_damselfish)) +
+  geom_point(aes(color = lagoon,
+                 shape = year)) +
+  geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
+  labs(x = "Surgeonfish", y = "Spotted Damselfish", title = "Spotted Damselfish v. Surgeonfish") +
+  theme_minimal()
+
+adult_pair_scatter2 # Finalize, change size
+
+```
+
+```{r}
+
+adult_pair_scatter3 <- ggplot(adult_compare_tidy, aes(x = surgeonfish, y = yellow_damselfish)) +
+  geom_point(aes(color = lagoon,
+                 shape = year)) +
+  geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
+  labs(x = "Surgeonfish", y = "Yellwo Damselfish", title = "Yellow Damselfish v. Surgeonfish") +
+  theme_minimal()
+
+adult_pair_scatter3 # Finalize, change size
+
+```
+
+```{r}
+
+adult_pair_scatter4 <- ggplot(adult_compare_tidy, aes(x = coral_trout, y = spotted_damselfish)) +
+  geom_point(aes(color = lagoon,
+                 shape = year)) +
+  geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
+  labs(x = "Coral Trout", y = "Spotted Damselfish", title = "Spotted Damselfish v. Coral Trout") +
+  theme_minimal()
+
+adult_pair_scatter4 # Finalize, change size
+
+```
+
+```{r}
+
+adult_pair_scatter5 <- ggplot(adult_compare_tidy, aes(x = coral_trout, y = yellow_damselfish)) +
+  geom_point(aes(color = lagoon,
+                 shape = year)) +
+  geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
+  labs(x = "Coral Trout", y = "Yellow Damselfish", title = "Yellow Damselfish v. Coral Trout") +
+  theme_minimal()
+
+adult_pair_scatter5 # Finalize, change size
+
+```
+
+```{r}
+
+adult_pair_scatter6 <- ggplot(adult_compare_tidy, aes(x = yellow_damselfish, y = spotted_damselfish)) +
+  geom_point(aes(color = lagoon,
+                 shape = year)) +
+  geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
+  labs(x = "Yellow Damselfish", y = "Spotted Damselfish", title = "Spotted Damselfish v. Yellow Damselfish") +
+  theme_minimal()
+
+adult_pair_scatter6 # Finalize, change size  
+  
 ```
 
