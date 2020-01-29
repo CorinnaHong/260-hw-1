@@ -124,7 +124,7 @@ Yellow damselfish recruits showed a significant deifference in density between A
 
 Coral trout and yellow damselfish showed significant differences in density in 2009 and 2018 at both lagoons. Average coral trout density was higher in 2009 than 2018 at both lagoons. Average yellow damselfish density was higher in 2018 than 2009 at both lagoons. Surgeonfish at Rarotonga showed a significant difference in density between 2009 and 2018 where densities were higher in 2018 than 2009.
 
-#3. Density of recruits and adults per area of reef
+#3. Mean Density of Recruits and Adults per Area of Reef
 </br>
 ```{r, read in and wrangle adult and recruit data}
 
@@ -171,7 +171,7 @@ adult_recruit_scatter
 All species of fish show positive correlations between average adult fish density and average fish recruit density. The linear models fits the data for Surgeonfish the most, with R^2^ = 0.97. This means that the positive correlation between adult sugeonfish and surgeonfish recruits is mostly predicted by the value of the recruit density. The linear model for yellow damselfish has the lowest R^2^ value of 0.40. This means that, based on my linear model, the value of recuit density does not predict the value of adult fish density as well as the other models.
 
 
-#4. Adults and microhabitat
+#4. Adults and Microhabitat
 </br>
 
 ```{r, read in and wrangle adult and microhabitat data}
@@ -246,7 +246,7 @@ Average density of coral trout and surgeonfish is higher in Aitutaki than Raroto
 Coral trout and spotted damselfish show large differences in average density in 2009 and 2018 at both lagoons. Average surgeonfish density shows a large decline from 2009 to 2018 at Rarotonga. Average yellow damselfish density increases from 2009 to 2018 at both lagoons.
 
 
-#6. Pair Comparisons
+#6. Fish Pair Comparisons
 
 ```{r, read in and wrangle data}
 
@@ -261,7 +261,7 @@ adult_compare_tidy <- adult_compare %>%
 ```
 
 
-```{r, make graphs , fig.width = 5, fig.height = 3}
+```{r, make graphs , fig.width = 7, fig.height = 5}
 
 # Surgeonfish, coral Trout
 
@@ -277,10 +277,12 @@ adult_pair_scatter <- ggplot(adult_compare_tidy, aes(x = surgeonfish, y = coral_
                  shape = year)) +
   scale_color_manual(values=c("lightseagreen", "goldenrod2", "lightseagreen", "goldenrod2")) +
   geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
-  labs(x = "Surgeonfish", y = "Coral Trout", title = "Coral Trout v. Surgeonfish") +
+  labs(x = expression(Surgeonfish~Density~("#"/100~m^2~of~reef)), 
+       y = expression(Coral~Trout~Density~("#"/100~m^2~of~reef)),
+       title = "Coral Trout v. Surgeonfish") +
   theme_minimal()
 
-adult_pair_scatter # Finalize
+adult_pair_scatter
 
 
 
@@ -299,10 +301,12 @@ adult_pair_scatter2 <- ggplot(adult_compare_tidy, aes(x = surgeonfish, y = spott
                  shape = year)) +
   scale_color_manual(values=c("lightseagreen", "goldenrod2", "lightseagreen", "goldenrod2")) +
   geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
-  labs(x = expression(Surgeonfish~Density~("#"/100~m^2~of~reef)), y = expression(Spotted~Damselfish~Density~("#"/100~m^2~of~reef)), title = "Spotted Damselfish Dne v. Surgeonfish") +
+  labs(x = expression(Surgeonfish~Density~("#"/100~m^2~of~reef)), 
+       y = expression(Spotted~Damselfish~Density~("#"/100~m^2~of~reef)), 
+       title = "Spotted Damselfish v. Surgeonfish") +
   theme_minimal()
 
-adult_pair_scatter2 # Finalize
+adult_pair_scatter2
 
 
 
@@ -321,10 +325,12 @@ adult_pair_scatter3 <- ggplot(adult_compare_tidy, aes(x = surgeonfish, y = yello
                  shape = year)) +
   scale_color_manual(values=c("lightseagreen", "goldenrod2", "lightseagreen", "goldenrod2")) +
   geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
-  labs(x = "Surgeonfish", y = "Yellwo Damselfish", title = "Yellow Damselfish v. Surgeonfish") +
+  labs(x = expression(Surgeonfish~Density~("#"/100~m^2~of~reef)), 
+       y = expression(Yellow~Damselfish~Density~("#"/100~m^2~of~reef)),
+       title = "Yellow Damselfish v. Surgeonfish") +
   theme_minimal()
 
-adult_pair_scatter3 # Finalize
+adult_pair_scatter3
 
 
 
@@ -342,10 +348,12 @@ adult_pair_scatter4 <- ggplot(adult_compare_tidy, aes(x = coral_trout, y = spott
                  shape = year)) +
   scale_color_manual(values=c("lightseagreen", "goldenrod2", "lightseagreen", "goldenrod2")) +
   geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
-  labs(x = "Coral Trout", y = "Spotted Damselfish", title = "Spotted Damselfish v. Coral Trout") +
+  labs(x = expression(Coral~Trout~Density~("#"/100~m^2~of~reef)), 
+       y = expression(Spotted~Damselfish~Density~("#"/100~m^2~of~reef)), 
+       title = "Spotted Damselfish v. Coral Trout") +
   theme_minimal()
 
-adult_pair_scatter4 # Finalize
+adult_pair_scatter4
 
 
 
@@ -362,10 +370,12 @@ adult_pair_scatter5 <- ggplot(adult_compare_tidy, aes(x = coral_trout, y = yello
   geom_point(aes(color = lagoon,
                  shape = year)) +
   geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
-  labs(x = "Coral Trout", y = "Yellow Damselfish", title = "Yellow Damselfish v. Coral Trout") +
+  labs(x = expression(Coral~Trout~Density~("#"/100~m^2~of~reef)), 
+       y = expression(Yellow~Damselfish~Density~("#"/100~m^2~of~reef)),
+       title = "Yellow Damselfish v. Coral Trout") +
   theme_minimal()
 
-adult_pair_scatter5 # Finalize
+adult_pair_scatter5
 
 
 
@@ -383,9 +393,13 @@ adult_pair_scatter6 <- ggplot(adult_compare_tidy, aes(x = yellow_damselfish, y =
                  shape = year)) +
   scale_color_manual(values=c("lightseagreen", "goldenrod2", "lightseagreen", "goldenrod2")) +
   geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
-  labs(x = "Yellow Damselfish", y = "Spotted Damselfish", title = "Spotted Damselfish v. Yellow Damselfish") +
+  labs(x = expression(Yellow~Damselfish~Density~("#"/100~m^2~of~reef)), 
+       y = expression(Spotted~Damselfish~Density~("#"/100~m^2~of~reef)),
+       title = "Spotted Damselfish v. Yellow Damselfish") +
   theme_minimal()
 
-adult_pair_scatter6 # Finalize
+adult_pair_scatter6
 
 ```
+
+The pairs of surgeonfish and coral trout, surgeonfish and spotted damselfish, and coral trout and spotted damselfish all have positive relationships. This means that a high average density of one species is correlated with a high average density of the other. Out of the three pairs, coral trout and spotted damselfish have the highest R^2^ value of 0.97. Surgeonfish and yellow damselfish, coral trout and yellow damselfish, and spotted damselfish and yellow damselfish all have negative relationships. This means a high average density of one species is correlated with a low average density in the other. Out of the three pairs, coral trout and yellow damselfish have thie highest R^2^ value of 0.89.
