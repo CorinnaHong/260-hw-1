@@ -107,6 +107,8 @@ recruit_organisms_bar # FINALIZE, remove black line at the bottom.
 
 ```
 
+#3. Density of recruits and adults per area of reef
+</br>
 ```{r, read in and wrangle adult and recruit data}
 
 adult_recruit <- read_csv("adult_recruit_density.csv")
@@ -137,7 +139,79 @@ adult_recruit_scatter <- ggplot(adult_recruit_tidy, aes(x = recruit, y = adult))
   labs(x = "Recruit Density (number/100m^2)", y = "Adult Density (number/100m^2)", title = "Recruit and Adult Density") +
   theme_minimal()
 
-adult_recruit_scatter #FINALIZE, add R2 values
+adult_recruit_scatter #FINALIZE, add R2 values, also recuits v. adults or adults v. recruits?
+
+```
+
+#4. Adults and microhabitat
+</br>
+
+```{r, read in and wrangle adult and microhabitat data}
+
+adult_micro <- read_csv("adult_microhabitat.csv")
+
+adult_micro_tidy <- adult_micro %>% 
+  gather(`Rarotonga_2009`, `Aitutaki_2009`, `Rarotonga_2018`, `Aitutaki_2018`, key = "lagoon", value = "density") %>%
+  separate(lagoon, into = c ("lagoon","year"), sep = "_") %>% 
+  spread(Type, density) %>% 
+  clean_names()
+
+```
+
+```{r, r-squared}
+
+
+
+```
+
+```{r, adult microhabitat graph}
+
+adult_micro_scatter <- ggplot(adult_micro_tidy, aes(x = microhabitat, y = adult)) +
+  geom_point(aes(color = lagoon,
+                 shape = year)) +
+  geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
+  facet_wrap( ~ fish, scale = "free") +
+  labs(x = "Recruit Microhabitat Density (m^2/100m^2)", y = "Adult Density (number/100m^2)", title = "Adult and microhabitat density") +
+  theme_minimal()
+
+adult_micro_scatter
+
+```
+
+#5. Density of Adults per Area of Bottom Cover
+
+```{r}
+
+
+
+```
+
+#6. Pair Comparisons
+
+```{r, read in and wrangle data}
+
+adult_compare <- read_csv("adult_compare.csv")
+
+adult_compare_tidy <- adult_compare %>% 
+  gather(`Rarotonga_2009`, `Aitutaki_2009`, `Rarotonga_2018`, `Aitutaki_2018`, key = "lagoon", value = "density") %>% 
+  separate(lagoon, into = c ("lagoon","year"), sep = "_") %>% 
+  spread(Fish, density) %>% 
+  clean_names()
+
+```
+
+
+```{r, make graph}
+
+adult_pair_scatter <- ggplot(adult_, aes(x = microhabitat, y = adult)) +
+  geom_point(aes(color = lagoon,
+                 shape = year)) +
+  geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
+  facet_wrap( ~ fish, scale = "free") +
+  labs(x = "Recruit Microhabitat Density (m^2/100m^2)", y = "Adult Density (number/100m^2)", title = "Adult and microhabitat density") +
+  theme_minimal()
+
+adult_micro_scatter
 
 ```
 
