@@ -8,7 +8,8 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
                       message = FALSE,
-                      warning = FALSE)
+                      warning = FALSE,
+                      fig.align = "CENTER")
 ```
 
 ```{r, load packages}
@@ -42,14 +43,15 @@ labels <- c('Coral Trout (fish, predators of adult fishes)' = "Coral Trout",
             'Yellow Damselfish (fish, eats zooplankton)' = "Yellow Damselfish") # Rename organisms for facet labels
 
 adult_fish_bar <- ggplot(adult_fish, aes(fill = year, x = lagoon, y = mean_density_per_100m2)) +
-  geom_bar(position = "dodge", stat = "identity") + 
+  geom_bar(position = "dodge", stat = "identity") +
+  scale_fill_manual(values=c("lightseagreen", "goldenrod2", "lightseagreen", "goldenrod2")) +
   geom_errorbar(aes(ymin = mean_density_per_100m2 + ci95, 
                     ymax = mean_density_per_100m2 - ci95), 
                 width = 0.3, position =  position_dodge(.9)) +  
   labs(x = "Lagoon", y = expression(Mean~Density~(number/"100m^2")), title = "Adult Fish Comparisons") +
   facet_wrap(~ organism, labeller = labeller(organism = labels), scale = "free") + # facet wrap with new labels
   scale_y_continuous(expand = c(0,0)) +  
-  theme_minimal() # or maybe go with classic?
+  theme_minimal()
 
 adult_fish_bar # FINALIZE (fix the 100 m^2 problem)
 
@@ -64,13 +66,14 @@ adult_other <- adult_organisms_tidy %>%
 
 adult_other_bar <- ggplot(adult_other, aes(fill = year, x = lagoon, y = mean_density_per_100m2)) +
   geom_bar(position = "dodge", stat = "identity") + 
+  scale_fill_manual(values=c("lightseagreen", "goldenrod2", "lightseagreen", "goldenrod2")) +
   geom_errorbar(aes(ymin = mean_density_per_100m2 + ci95, 
                     ymax = mean_density_per_100m2 - ci95),
                 width = 0.3, position=position_dodge(.9)) +  
   labs(x = "Lagoon", y = expression(Mean~Density~(m^2/"100m^2")), title = "Adult Organisms Comparisons") +
-  facet_wrap(~ organism, scale = "free") + # facet wrap with new labels  
+  facet_wrap(~ organism, scale = "free") + 
   scale_y_continuous(expand = c(0,0)) +
-  theme_minimal() # or maybe go with classic?
+  theme_minimal()
 
 adult_other_bar # FINALIZE (fix the 100m^2 problem, resize/rearragne facet graphs)
 
@@ -95,13 +98,14 @@ recruit_organisms_tidy <- recruit_organisms %>%
 
 recruit_organisms_bar <- ggplot(recruit_organisms_tidy, aes(fill = year, x = lagoon, y = density)) +
   geom_bar(position = "dodge", stat = "identity") +
+  scale_fill_manual(values=c("lightseagreen", "goldenrod2", "lightseagreen", "goldenrod2")) +
   geom_errorbar(aes(ymin = density + ci, 
                     ymax = density - ci),
                 width = 0.3, position=position_dodge(.9)) +  
   labs(x = "Lagoon", y = expression(Mean~Density~(number/m^2)), title = "Fish Recruit Comparisons") +
   facet_wrap(~ fish, scale = "free") +  
   scale_y_continuous(expand = c(0,0)) +
-  theme_minimal() # or maybe go with classic?
+  theme_minimal() 
 
 recruit_organisms_bar # FINALIZE, remove black line at the bottom.
 
@@ -134,6 +138,7 @@ adult_recruit_tidy <- adult_recruit %>%
 adult_recruit_scatter <- ggplot(adult_recruit_tidy, aes(x = recruit, y = adult)) +
   geom_point(aes(color = lagoon,
                  shape = year)) +
+  scale_color_manual(values=c("lightseagreen", "goldenrod2", "lightseagreen", "goldenrod2")) +
   geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
   facet_wrap( ~ fish, scale = "free") +
   labs(x = "Recruit Density (number/100m^2)", y = "Adult Density (number/100m^2)", title = "Recruit and Adult Density") +
@@ -169,6 +174,7 @@ adult_micro_tidy <- adult_micro %>%
 adult_micro_scatter <- ggplot(adult_micro_tidy, aes(x = microhabitat, y = adult)) +
   geom_point(aes(color = lagoon,
                  shape = year)) +
+  scale_color_manual(values=c("lightseagreen", "goldenrod2", "lightseagreen", "goldenrod2")) +
   geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
   facet_wrap( ~ fish, scale = "free") +
   labs(x = "Recruit Microhabitat Density (m^2/100m^2)", y = "Adult Density (number/100m^2)", title = "Adult and microhabitat density") +
@@ -180,9 +186,24 @@ adult_micro_scatter
 
 #5. Density of Adults per Area of Bottom Cover
 
+```{r, wrangle data}
+
+adult_habitat_density <- adult_micro_tidy %>% 
+  mutate(density = adult/microhabitat)
+
+```
+
 ```{r}
 
+adult_habitat_bar <- ggplot(adult_habitat_density, aes(fill = year, x = lagoon, y = density)) +
+  geom_bar(position = "dodge", stat = "identity") + 
+  scale_fill_manual(values=c("lightseagreen", "goldenrod2", "lightseagreen", "goldenrod2")) +
+  labs(x = "Lagoon", y = expression(Mean~Density~of~Adults~ \n (number/m^2~of~microhabitat)), title = "Density of Adult Organisms in Microhabitat") +
+  facet_wrap(~ fish, scale = "free") + 
+  scale_y_continuous(expand = c(0,0)) +
+  theme_minimal()
 
+adult_habitat_bar
 
 ```
 
@@ -201,60 +222,57 @@ adult_compare_tidy <- adult_compare %>%
 ```
 
 
-```{r, make graph}
+```{r, make graphs , fig.width = 5, fig.height = 5}
 
+# Surgeonfish, coral Trout
 adult_pair_scatter <- ggplot(adult_compare_tidy, aes(x = surgeonfish, y = coral_trout)) +
   geom_point(aes(color = lagoon,
                  shape = year)) +
+  scale_color_manual(values=c("lightseagreen", "goldenrod2", "lightseagreen", "goldenrod2")) +
   geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
   labs(x = "Surgeonfish", y = "Coral Trout", title = "Coral Trout v. Surgeonfish") +
   theme_minimal()
 
-adult_pair_scatter # Finalize, change size
+adult_pair_scatter # Finalize
 
-```
 
-```{r}
-
+# Surgeonfish, Spotted Damselfish
 adult_pair_scatter2 <- ggplot(adult_compare_tidy, aes(x = surgeonfish, y = spotted_damselfish)) +
   geom_point(aes(color = lagoon,
                  shape = year)) +
+  scale_color_manual(values=c("lightseagreen", "goldenrod2", "lightseagreen", "goldenrod2")) +
   geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
   labs(x = "Surgeonfish", y = "Spotted Damselfish", title = "Spotted Damselfish v. Surgeonfish") +
   theme_minimal()
 
-adult_pair_scatter2 # Finalize, change size
+adult_pair_scatter2 # Finalize
 
-```
 
-```{r}
-
+# Surgeonfish, Yellow Damselfish
 adult_pair_scatter3 <- ggplot(adult_compare_tidy, aes(x = surgeonfish, y = yellow_damselfish)) +
   geom_point(aes(color = lagoon,
                  shape = year)) +
+  scale_color_manual(values=c("lightseagreen", "goldenrod2", "lightseagreen", "goldenrod2")) +
   geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
   labs(x = "Surgeonfish", y = "Yellwo Damselfish", title = "Yellow Damselfish v. Surgeonfish") +
   theme_minimal()
 
-adult_pair_scatter3 # Finalize, change size
+adult_pair_scatter3 # Finalize
 
-```
 
-```{r}
-
+# Coral Trout, Spotted Damselfish
 adult_pair_scatter4 <- ggplot(adult_compare_tidy, aes(x = coral_trout, y = spotted_damselfish)) +
   geom_point(aes(color = lagoon,
                  shape = year)) +
+  scale_color_manual(values=c("lightseagreen", "goldenrod2", "lightseagreen", "goldenrod2")) +
   geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
   labs(x = "Coral Trout", y = "Spotted Damselfish", title = "Spotted Damselfish v. Coral Trout") +
   theme_minimal()
 
-adult_pair_scatter4 # Finalize, change size
+adult_pair_scatter4 # Finalize
 
-```
 
-```{r}
-
+# Coral Trout, Yellow Damselfish
 adult_pair_scatter5 <- ggplot(adult_compare_tidy, aes(x = coral_trout, y = yellow_damselfish)) +
   geom_point(aes(color = lagoon,
                  shape = year)) +
@@ -262,20 +280,18 @@ adult_pair_scatter5 <- ggplot(adult_compare_tidy, aes(x = coral_trout, y = yello
   labs(x = "Coral Trout", y = "Yellow Damselfish", title = "Yellow Damselfish v. Coral Trout") +
   theme_minimal()
 
-adult_pair_scatter5 # Finalize, change size
+adult_pair_scatter5 # Finalize
 
-```
 
-```{r}
-
+# Spotted Damselfish, Yellow Damselfish
 adult_pair_scatter6 <- ggplot(adult_compare_tidy, aes(x = yellow_damselfish, y = spotted_damselfish)) +
   geom_point(aes(color = lagoon,
                  shape = year)) +
+  scale_color_manual(values=c("lightseagreen", "goldenrod2", "lightseagreen", "goldenrod2")) +
   geom_smooth(method = "lm", se = FALSE, color = "grey50", size = 0.5) +
   labs(x = "Yellow Damselfish", y = "Spotted Damselfish", title = "Spotted Damselfish v. Yellow Damselfish") +
   theme_minimal()
 
-adult_pair_scatter6 # Finalize, change size  
-  
-```
+adult_pair_scatter6 # Finalize
 
+```
